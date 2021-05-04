@@ -10,7 +10,7 @@
 #ifndef MEDIAN_H
 #define MEDIAN_H
 
-#include<image.h>
+#include"image.h"
 
 void medianFilter(const unsigned char input[][HEIGHT], unsigned char output[][HEIGHT], unsigned int width, unsigned int height);
 

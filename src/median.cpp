@@ -7,7 +7,7 @@
 // Matthias Jung <jungma@eit.uni-kl.de>
 // Christian De Schryver <schryver@eit.uni-kl.de>
 
-#include<image.h>
+#include"image.h"
 
 void medianFilter(const unsigned char input[][HEIGHT], unsigned char output[][HEIGHT], unsigned int width, unsigned int height)
 {
