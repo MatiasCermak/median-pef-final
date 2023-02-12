@@ -11,6 +11,7 @@
 *.blg
 *.log
 *.synctex.gz
+.vscode
 
 *.project
 *.pyc
