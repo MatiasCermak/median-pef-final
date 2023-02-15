@@ -66,7 +66,7 @@ int main(void)
         image.WriteToFile("Output.bmp");
 }
 
-// Adding this method to sort the array of elements using insertion sort.
+// Adding this method to sort the array of elements using bubble sort.
 void sortElements(char arr[], int n)
 {
         for (int i = 0; i < n - 1; i++)
