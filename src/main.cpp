@@ -16,12 +16,17 @@ using namespace std;
 
 void medianFilter(unsigned char **input, unsigned char **output, unsigned int width, unsigned int height);
 
-int main(void)
+int main(int argc, char *argv[])
 {
-        BMP lenaImg;
-        lenaImg.ReadFromFile("/home/mcermak/Documents/PEF/median.cpp/lena.bmp");
-        int height = lenaImg.TellHeight();
-        int width = lenaImg.TellWidth();
+        if(argc != 2) {
+                cout << "Error: Cantidad de argumentos inválida." << endl;
+                return 1;
+        }
+        char* imgFile = argv[1];
+        BMP inputImg;
+        inputImg.ReadFromFile(imgFile);
+        int height = inputImg.TellHeight();
+        int width = inputImg.TellWidth();
         unsigned char **IN = new unsigned char *[height];
         for (int i = 0; i < height; i++)
         {
@@ -38,7 +43,7 @@ int main(void)
         {
                 for (int j = 0; j < height; j++)
                 {
-                        IN[i][j] = lenaImg(i, j)->Red;
+                        IN[i][j] = inputImg(i, j)->Red;
                 }
         }
 
@@ -49,21 +54,21 @@ int main(void)
         }
 
         // Save Image:
-        BMP image;
-        image.SetSize(width, height);
+        BMP outputImg;
+        outputImg.SetSize(width, height);
         int x;
         for (x = 0; x < width; x++)
         {
                 int y;
                 for (y = 0; y < height; y++)
                 {
-                        image(x, y)->Red = OUT[x][y];
-                        image(x, y)->Green = OUT[x][y];
-                        image(x, y)->Blue = OUT[x][y];
-                        image(x, y)->Alpha = 0;
+                        outputImg(x, y)->Red = OUT[x][y];
+                        outputImg(x, y)->Green = OUT[x][y];
+                        outputImg(x, y)->Blue = OUT[x][y];
+                        outputImg(x, y)->Alpha = 0;
                 }
         }
-        image.WriteToFile("Output.bmp");
+        outputImg.WriteToFile("Output.bmp");
 }
 
 // Adding this method to sort the array of elements using bubble sort.
