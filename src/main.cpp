@@ -18,25 +18,27 @@ void medianFilter(unsigned char **input, unsigned char **output, unsigned int wi
 
 int main(int argc, char *argv[])
 {
-        if(argc != 2) {
-                cout << "Error: Cantidad de argumentos inválida." << endl;
+        if(argc != 3) {
+                cout << "Bad arguments" << endl;
                 return 1;
         }
-        char* imgFile = argv[1];
+        
+        char* imgInputFile = argv[1];
+        char* imgOutputFile = argv[2];
         BMP inputImg;
-        inputImg.ReadFromFile(imgFile);
+        inputImg.ReadFromFile(imgInputFile);
         int height = inputImg.TellHeight();
         int width = inputImg.TellWidth();
-        unsigned char **IN = new unsigned char *[height];
-        for (int i = 0; i < height; i++)
+        unsigned char **IN = new unsigned char *[width];
+        for (int i = 0; i < width; i++)
         {
-                IN[i] = new unsigned char[width];
+                IN[i] = new unsigned char[height];
         }
 
-        unsigned char **OUT = new unsigned char *[height];
-        for (int i = 0; i < height; i++)
+        unsigned char **OUT = new unsigned char *[width];
+        for (int i = 0; i < width; i++)
         {
-                OUT[i] = new unsigned char[width];
+                OUT[i] = new unsigned char[height];
         }
 
         for (int i = 0; i < width; i++)
@@ -68,7 +70,7 @@ int main(int argc, char *argv[])
                         outputImg(x, y)->Alpha = 0;
                 }
         }
-        outputImg.WriteToFile("Output.bmp");
+        outputImg.WriteToFile(imgOutputFile);
 }
 
 // Adding this method to sort the array of elements using bubble sort.
@@ -170,7 +172,7 @@ void medianFilter(unsigned char **input, unsigned char **output, unsigned int wi
                         sortArray[48] = paddedArray[row + 3][col + 3];
 
                         sortElements(sortArray, 49);
-                        paddedArray[row - 3][col - 3] = sortArray[4];
+                        paddedArray[row - 3][col - 3] = sortArray[24];
                 }
         }
         i = 0;

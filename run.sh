@@ -1,1 +1,1 @@
-./cmakebuild/median $1
+./cmakebuild/median $1 $2
