@@ -91,9 +91,10 @@ int main(int argc, char *argv[])
                 break;
         case 2:
                 sortingFunc = insertionSort;
-
-        default:
                 break;
+        default:
+                cout << "No sorting algorithm mapped to " << sortingAlgo << endl;
+                return 1;
         }
 
         BMP inputImg;
