@@ -8,7 +8,7 @@ img = Image.open("forest.bmp")
 img_arr = np.array(img)
 
 # Define the probability of the salt and pepper noise
-noise_prob = 0.06
+noise_prob = 0.25
 
 # Add salt and pepper noise to the image
 for i in range(img_arr.shape[0]):
@@ -23,4 +23,4 @@ for i in range(img_arr.shape[0]):
 noisy_img = Image.fromarray(img_arr)
 
 # Save the noisy image
-noisy_img.save("forest-noise-2.bmp")
+noisy_img.save("forest-noise-extreme.bmp")

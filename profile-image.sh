@@ -1,18 +1,15 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-inputFile = $1
-outputFile = $2
-timesToRun = $3
-kernelSize = $4
-
+inputFile=$1;
+kernelSize=$2;
+filterIterations=$3;
+timesToRun=$4;
 
 for ((c=0; c<3; c++))
 do
-    for ((c=0; c<3; c++))
+    for ((d=0; d<$timesToRun; d++))
     do
-        for ((c=0; c<$timesToRun; c++))
-        do
-            ./run.sh $inputFile $outputFile $kernelSize
-        done
+        ./run.sh $inputFile "output"-$inputFile $kernelSize $c $filterIterations
     done
+    echo " "
 done

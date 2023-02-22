@@ -14,7 +14,7 @@
 
 using namespace std;
 
-void bubbleSort(char arr[], int n)
+void bubbleSort(unsigned char arr[], int n)
 {
         for (int i = 0; i < n - 1; i++)
         {
@@ -22,7 +22,7 @@ void bubbleSort(char arr[], int n)
                 {
                         if (arr[j] > arr[j + 1])
                         {
-                                char tmp = arr[j];
+                                unsigned char tmp = arr[j];
                                 arr[j] = arr[j + 1];
                                 arr[j + 1] = tmp;
                         }
@@ -30,12 +30,12 @@ void bubbleSort(char arr[], int n)
         }
 }
 
-void quickSort(char arr[], int n)
+void quickSort(unsigned char arr[], int n)
 {
         if (n <= 1)
                 return; // base case
 
-        char pivot = arr[n - 1];
+        unsigned char pivot = arr[n - 1];
         int i = -1;
         for (int j = 0; j < n - 1; j++)
         {
@@ -51,11 +51,11 @@ void quickSort(char arr[], int n)
         quickSort(arr + i + 2, n - i - 2);
 }
 
-void insertionSort(char arr[], int n)
+void insertionSort(unsigned char arr[], int n)
 {
         for (int i = 1; i < n; i++)
         {
-                char key = arr[i];
+                unsigned char key = arr[i];
                 int j = i - 1;
                 while (j >= 0 && arr[j] > key)
                 {
@@ -66,20 +66,21 @@ void insertionSort(char arr[], int n)
         }
 }
 
-void medianFilter(unsigned char **input, unsigned char **output, unsigned int width, unsigned int height, int kernelSize, void (*sortingFunc)(char[], int));
+void medianFilter(unsigned char **input, unsigned char **output, unsigned int width, unsigned int height, int kernelSize, void (*sortingFunc)(unsigned char[], int), int filterIterations);
 
 int main(int argc, char *argv[])
 {
-        if (argc != 5)
+        if (argc != 6)
         {
                 cout << "Bad arguments" << endl;
                 return 1;
         }
-        void (*sortingFunc)(char[], int);
+        void (*sortingFunc)(unsigned char[], int);
         char *imgInputFile = argv[1];
         char *imgOutputFile = argv[2];
         int kernelSize = atoi(argv[3]);
         int sortingAlgo = atoi(argv[4]);
+        int filterIterations = atoi(argv[5]);
 
         switch (sortingAlgo)
         {
@@ -124,7 +125,7 @@ int main(int argc, char *argv[])
         // Do a profiling of this block:
         {
                 Profiler p;
-                medianFilter(IN, OUT, width, height, kernelSize, sortingFunc);
+                medianFilter(IN, OUT, width, height, kernelSize, sortingFunc, filterIterations);
         }
 
         // Save Image:
@@ -145,62 +146,55 @@ int main(int argc, char *argv[])
         outputImg.WriteToFile(imgOutputFile);
 }
 
-// Adding this method to sort the array of elements using bubble sort.
-void sortElements(char arr[], int n)
-{
-        for (int i = 0; i < n - 1; i++)
-        {
-                for (int j = 0; j < n - i - 1; j++)
-                {
-                        if (arr[j] > arr[j + 1])
-                        {
-                                char tmp = arr[j];
-                                arr[j] = arr[j + 1];
-                                arr[j + 1] = tmp;
-                        }
-                }
-        }
-}
-
 // This method will be called from main, it passes the input image, output, height and width of array. A 3 x 3 kernel is used to remove salt and pepper from the image
-void medianFilter(unsigned char **input, unsigned char **output, unsigned int width, unsigned int height, int kernelSize, void (*sortingFunc)(char[], int))
+void medianFilter(unsigned char **input, unsigned char **output, unsigned int width, unsigned int height, int kernelSize, void (*sortingFunc)(unsigned char[], int), int filterIterations)
 {
-        char paddedArray[width + kernelSize - 1][height + kernelSize - 1];
+        unsigned char paddedArray[width + kernelSize - 1][height + kernelSize - 1];
         int i, j, row = 0, col = 0;
+        int radius = (kernelSize - 1) / 2;
         for (i = 0; i < (width + kernelSize - 1); i++)
         {
                 for (j = 0; j < (height + kernelSize - 1); j++)
                 {
-                        if ((i < (kernelSize - 1) / 2) || (i >= (width + (kernelSize - 1) / 2) - 1) || (j < (kernelSize - 1) / 2) || (j >= (height + (kernelSize - 1) / 2 - 1)))
+                        if ((i < radius) || (i >= (width + radius)) || (j < radius) || (j >= (height + radius)))
                         {
                                 paddedArray[i][j] = 0;
                         }
                         else
                         {
-                                paddedArray[i][j] = input[i - (kernelSize - 1) / 2][j - (kernelSize - 1) / 2];
+                                paddedArray[i][j] = input[i - radius][j - radius];
                         }
                 }
         }
 
-        char sortArray[kernelSize * kernelSize];
+        unsigned char sortArray[kernelSize * kernelSize];
         int sortArrayCount;
-        for (row = (kernelSize - 1) / 2; row <= width + (kernelSize - 1) / 2 - 1; ++row)
+        for (int iteration = 0; iteration < filterIterations; iteration++)
         {
-                for (col = (kernelSize - 1) / 2; col <= height + (kernelSize - 1) / 2 - 1; ++col)
+                for (row = radius; row <= width + radius - 1; ++row)
                 {
-                        sortArrayCount = 0;
-
-                        for (int i = -((kernelSize - 1) / 2); i <= ((kernelSize - 1) / 2); i++)
+                        for (col = radius; col <= height + radius - 1; ++col)
                         {
-                                for (int j = -((kernelSize - 1) / 2); j <= ((kernelSize - 1) / 2); j++)
-                                {
-                                        sortArray[sortArrayCount] = paddedArray[row + i][col + j];
-                                        sortArrayCount++;
-                                }
-                        }
+                                sortArrayCount = 0;
 
-                        sortingFunc(sortArray, kernelSize * kernelSize);
-                        output[row - ((kernelSize - 1) / 2)][col - ((kernelSize - 1) / 2)] = sortArray[((kernelSize * kernelSize - 1) / 2)];
+                                for (int i = -(radius); i <= (radius); i++)
+                                {
+                                        for (int j = -(radius); j <= (radius); j++)
+                                        {
+                                                sortArray[sortArrayCount] = paddedArray[row + i][col + j];
+                                                sortArrayCount++;
+                                        }
+                                }
+
+                                sortingFunc(sortArray, kernelSize * kernelSize);
+
+                                if(iteration == (filterIterations - 1)) {
+                                        output[row - (radius)][col - (radius)] = sortArray[((kernelSize * kernelSize - 1) / 2)];
+                                } else {
+                                        paddedArray[row][col] = sortArray[((kernelSize * kernelSize - 1) / 2)];
+                                }
+                                
+                        }
                 }
         }
 }
