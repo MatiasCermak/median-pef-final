@@ -88,7 +88,7 @@ void sortElements(char arr[], int n)
         }
 }
 
-// This method will be called from main, it passes the input image, output, height and width of array. A 3 x 3 kernel is used to remove salt and pepper from the image
+// This method will be called from main, it passes the input image, output, height and width of array. A 7 x 7 kernel is used to remove salt and pepper from the image
 void medianFilter(unsigned char **input, unsigned char **output, unsigned int width, unsigned int height)
 {
         char paddedArray[width + 6][height + 6];
